@@ -1,223 +1,212 @@
 export const myProjects = [
   {
     id: 1,
-    title: "E-commerce Platform",
+    title: "Skill Swap",
     description:
-      "Facilitates purchases from international websites like Amazon and eBay, allowing customers to shop from these sites and have products delivered domestically.",
+      "A skill-exchange platform enabling users to learn and offer skills mutually, with session booking, real-time chat, and review features.",
     subDescription: [
-      "Built a scalable application with ASP.NET Core MVC, integrating global platforms like Amazon for domestic delivery.",
-      "Implemented secure authentication and database management using ASP.NET Core Identity and Entity Framework Core.",
-      "Designed a responsive frontend with Tailwind CSS, enhancing user experience.",
-      "Added payment systems, localization, and product filtering for functionality improvements.",
+      "Developed a full MERN stack application enabling users to connect, learn, and offer skills through mutual exchange.",
+      "Built real-time chat functionality using Socket.IO for seamless communication between users.",
     ],
-    href: "",
+    href: "https://skill-swap-omega-nine.vercel.app/",
     logo: "",
-    image: "/assets/projects/accessories.jpg",
+    image: "/assets/projects/Skill-Swap.png",
     tags: [
       {
         id: 1,
-        name: "C#",
-        path: "/assets/logos/csharp.svg",
+        name: "React",
+        path: "/assets/logos/react.svg",
       },
       {
         id: 2,
-        name: ".Net",
-        path: "/assets/logos/dotnet.svg",
+        name: "Node.js",
+        path: "/assets/logos/nodejs.png",
       },
       {
         id: 3,
-        name: "Ef Core",
-        path: "/assets/logos/efcore.png",
+        name: "Express.js",
+        path: "/assets/logos/express.png",
       },
       {
         id: 4,
-        name: "TailwindCSS",
-        path: "/assets/logos/tailwindcss.svg",
+        name: "MongoDB",
+        path: "/assets/logos/mongodb.png",
       },
     ],
   },
   {
     id: 2,
-    title: "Authentication & Authorization System",
+    title: "Geolocation Attendance Tracker",
     description:
-      "A secure authentication and authorization system using Auth0 for seamless user management.",
+      "A Flutter-based mobile application for geolocation-based attendance tracking, enabling automatic and manual check-in/check-out for organizations and institutions.",
     subDescription: [
-      "Integrated Auth0 for authentication, supporting OAuth, JWT, and multi-factor authentication.",
-      "Implemented role-based access control (RBAC) for fine-grained user permissions.",
-      "Developed a React-based frontend with Tailwind CSS for a sleek user experience.",
-      "Connected to a secure SQLite database for user data storage.",
+      "Built a cross-platform mobile app using Flutter and Dart with Firebase Authentication for secure login and sign-up.",
+      "Implemented geolocation-based automatic check-in/check-out, with a manual check-in option as a fallback.",
     ],
-    href: "",
+    href: "https://github.com/SruthikaPalanisamy/Geolocation-Attendance-Tracker",
     logo: "",
-    image: "/assets/projects/auth-system.jpg",
+    image: "/assets/projects/geolocation.jpeg",
     tags: [
       {
         id: 1,
-        name: "Auth0",
-        path: "/assets/logos/auth0.svg",
+        name: "Flutter",
+        path: "/assets/logos/fluuter.png",
       },
       {
         id: 2,
+        name: "Dart",
+        path: "/assets/logos/dart.png",
+      },
+      {
+        id: 3,
+        name: "Android Studio",
+        path: "/assets/logos/androidstudio.png",
+      },
+      {
+        id: 4,
+        name: "Firebase ",
+        path: "/assets/logos/firebase.png",
+      },
+    ],
+  },
+  {
+  id: 3,
+  title: "Vision Forge",
+  description:
+    "A computer vision-based CNC quality inspection dashboard that analyzes plate images to verify dimensions and hole counts against user-defined specifications in real time.",
+  subDescription: [
+    "Built a FastAPI backend with OpenCV to process plate images, detecting plate dimensions and hole features through contour analysis and adaptive thresholding.",
+    "Designed a real-time dashboard with live camera capture, image upload, and dataset gallery using Tailwind CSS and Chart.js for variance visualization.",
+  ],
+  href: "https://github.com/SruthikaPalanisamy/VisionForge",
+  logo: "",
+  image: "/assets/projects/v.jpeg",
+  tags: [
+    {
+      id: 1,
+      name: "Python",
+      path: "/assets/logos/python.png",
+    },
+    {
+      id: 2,
+      name: "FastAPI",
+      path: "/assets/logos/fastapi-1.svg",
+    },
+    {
+      id: 3,
+      name: "OpenCV",
+      path: "/assets/logos/opencv.png",
+    },
+    {
+      id: 4,
+      name: "TailwindCSS",
+      path: "/assets/logos/tailwindcss.svg",
+    },
+  ],
+},
+  {
+  
+  id: 4,
+  title: "Mern ThinkBoard",
+  description:
+    "A full-stack note-taking app built with the MERN stack, allowing users to create, view, edit, and delete notes with a clean, responsive interface.",
+  subDescription: [
+    "Built a RESTful API with Express and MongoDB (via Mongoose) to handle CRUD operations for notes.",
+    "Implemented API rate limiting using Upstash Redis to prevent abuse and ensure fair usage across users.",
+  ],
+    href: "https://mern-thinkboard-q3ui.onrender.com/",
+    logo: "",
+    image: "/assets/projects/think.png",
+    tags: [
+      {
+        id: 1,
         name: "React",
         path: "/assets/logos/react.svg",
       },
       {
+        id: 2,
+        name: "Node.js",
+        path: "/assets/logos/nodejs.png",
+      },
+      {
         id: 3,
-        name: "SQLite",
-        path: "/assets/logos/sqlite.svg",
+        name: "Express.js",
+        path: "/assets/logos/express.png",
       },
       {
         id: 4,
-        name: "TailwindCSS",
-        path: "/assets/logos/tailwindcss.svg",
+        name: "MongoDB",
+        path: "/assets/logos/mongodb.png",
       },
     ],
   },
   {
-    id: 3,
-    title: "Blazor Web App",
-    description:
-      "A modern, interactive web application built with Blazor WebAssembly and .NET Core.",
-    subDescription: [
-      "Developed a fully interactive Single Page Application (SPA) using Blazor WebAssembly.",
-      "Implemented API interactions using .NET Core for a robust backend.",
-      "Designed responsive UI components with Tailwind CSS for an enhanced UX.",
-      "Integrated SQLite for efficient client-side database storage.",
-    ],
-    href: "",
+  id: 5,
+  title: "Automated Fetal Biometric Analysis",
+  description:
+    "A YOLO-powered Streamlit application that analyzes ultrasound images to detect fetal abnormalities and visualize predictions with labeled bounding boxes.",
+  subDescription: [
+    "Trained and integrated a custom YOLO segmentation model to detect and classify anomalies in fetal ultrasound images.",
+    "Processed uploaded images using OpenCV, converting between color formats for accurate model inference and display.",
+  ],
+    href: "https://github.com/SruthikaPalanisamy/Automated-Fetal-Biometric-Analysis",
     logo: "",
-    image: "/assets/projects/blazor-app.jpg",
+    image: "/assets/logos/yolo.jpeg",
     tags: [
       {
         id: 1,
-        name: "Blazor",
-        path: "/assets/logos/blazor.svg",
+        name: "Python",
+        path: "/assets/logos/python.png",
       },
       {
         id: 2,
-        name: ".NET Core",
-        path: "/assets/logos/dotnetcore.svg",
+        name: "YOLO",
+        path: "/assets/logos/y.jpg",
       },
       {
         id: 3,
-        name: "SQLite",
-        path: "/assets/logos/sqlite.svg",
-      },
-      {
-        id: 4,
-        name: "TailwindCSS",
-        path: "/assets/logos/tailwindcss.svg",
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "C++ Game Engine",
-    description:
-      "A lightweight C++ game engine designed for 2D and 3D game development.",
-    subDescription: [
-      "Built a powerful rendering engine using OpenGL and C++.",
-      "Developed a physics engine with collision detection and particle effects.",
-      "Implemented a scripting system for easy game customization.",
-      "Optimized performance with multi-threading and efficient memory management.",
-    ],
-    href: "",
-    logo: "",
-    image: "/assets/projects/game-engine.jpg",
-    tags: [
-      {
-        id: 1,
-        name: "C++",
-        path: "/assets/logos/cplusplus.svg",
-      },
-      {
-        id: 2,
-        name: "C#",
-        path: "/assets/logos/csharp.svg",
-      },
-      {
-        id: 3,
-        name: "Git",
-        path: "/assets/logos/git.svg",
-      },
-      {
-        id: 4,
-        name: "Microsoft",
-        path: "/assets/logos/microsoft.svg",
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "WordPress Custom Theme",
-    description:
-      "A fully customizable WordPress theme optimized for performance and SEO.",
-    subDescription: [
-      "Developed a responsive WordPress theme using HTML5, CSS3, and JavaScript.",
-      "Integrated Tailwind CSS for modern styling and UI enhancements.",
-      "Optimized SEO and page speed using Vite.js for fast builds.",
-      "Implemented custom widgets and plugin compatibility for extended functionality.",
-    ],
-    href: "",
-    logo: "",
-    image: "/assets/projects/wordpress-theme.jpg",
-    tags: [
-      {
-        id: 1,
-        name: "WordPress",
-        path: "/assets/logos/wordpress.svg",
-      },
-      {
-        id: 2,
-        name: "HTML5",
-        path: "/assets/logos/html5.svg",
-      },
-      {
-        id: 3,
-        name: "CSS3",
-        path: "/assets/logos/css3.svg",
-      },
-      {
-        id: 4,
-        name: "Vite.js",
-        path: "/assets/logos/vitejs.svg",
-      },
-    ],
-  },
-  {
-    id: 6,
-    title: "Online Learning Platform",
-    description:
-      "A web application that allows users to enroll in courses, watch video lectures, and take quizzes.",
-    subDescription: [
-      "Built using Blazor WebAssembly for a seamless SPA experience.",
-      "Implemented video streaming with Azure Media Services.",
-      "Added a quiz system with dynamic question generation and real-time grading.",
-      "Integrated Stripe API for secure payment processing.",
-    ],
-    href: "",
-    logo: "",
-    image: "/assets/projects/elearning.jpg",
-    tags: [
-      {
-        id: 1,
-        name: "Blazor",
-        path: "/assets/logos/blazor.svg",
-      },
-      {
-        id: 2,
-        name: "Azure",
-        path: "/assets/logos/azure.svg",
-      },
-      {
-        id: 3,
-        name: "Stripe",
+        name: "Streamlit",
         path: "/assets/logos/stripe.svg",
       },
       {
         id: 4,
-        name: "TailwindCSS",
-        path: "/assets/logos/tailwindcss.svg",
+        name: "Ultralytics",
+        path: "/assets/logos/ultra.jpg",
+      },
+    ],
+  },
+  {
+  id: 6,
+  title: "Food Recipe Manager",
+  description:
+    "A web application for managing and discovering recipes, allowing users to create, browse, search, and organize their favorite dishes.",
+  subDescription: [
+    "Built a dynamic frontend using HTML5, CSS3, and JavaScript for browsing and managing recipes.",
+    "Developed a PHP backend to handle user authentication, recipe submissions with  MySQL database to store recipe details.",
+  ],
+  href: "https://github.com/SruthikaPalanisamy/Food-Recipe-Management-System",
+  logo: "",
+    image: "/assets/projects/food.webp",
+    tags: [
+      {
+        id: 1,
+        name: "HTML",
+        path: "/assets/logos/html5.svg",
+      },
+      {
+        id: 2,
+        name: "CSS3",
+        path: "/assets/logos/css3.svg",
+      },
+      {
+        id: 3,
+        name: "JS",
+        path: "/assets/logos/javascript.svg",
+      },
+      {
+        id: 4,
+        name: "GIT",
+        path: "/assets/logos/git.svg",
       },
     ],
   },
@@ -225,104 +214,68 @@ export const myProjects = [
 
 export const mySocials = [
   {
-    name: "WhatsApp",
-    href: "",
-    icon: "/assets/socials/whatsApp.svg",
+    name: "Email",
+    href: "mailto:sruthi38655@gmail.com",
+    icon: "/assets/logos/email.png",
   },
   {
     name: "Linkedin",
-    href: "https://www.linkedin.com/in/ali-sanati/",
+    href: "https://www.linkedin.com/in/sruthika-palanisamy-6b211a28b",
     icon: "/assets/socials/linkedIn.svg",
   },
   {
-    name: "Instagram",
-    href: "https://www.instagram.com/ali.sanatidev/reels/",
-    icon: "/assets/socials/instagram.svg",
+    name: "Github",
+    href: "https://github.com/SruthikaPalanisamy",
+    icon: "/assets/projects/github.png",
   },
+  {
+    name: "Leetcode",
+    href: "https://leetcode.com/u/shruthy2_1/",
+    icon: "/assets/socials/leetcode.png",
+  }
+  
 ];
 
 export const experiences = [
   {
-    title: "Software Developer",
-    job: "Security & Defense Projects",
-    date: "2021-2023",
+    title: "Executive Member",
+    job: "CSD Coding Club",
+    date: "2025-2026",
     contents: [
-      "Enhanced application security and developed new features, adhering to standards set by the Passive Defense Organization and National Cyberspace Center.",
-      "Designed and implemented intuitive map interfaces using MapsUI, enhancing user experience and enabling seamless interactive map integration.",
-      "Developed applications for industrial automation, leveraging C++ and the Fatek API for PLC communication.",
-      "Enhanced responsiveness and usability of applications using Windows Forms and WPF frameworks.",
-      "Executed XML to SVG conversions using X-DOM, ensuring dynamic and efficient data visualization.",
-    ],
+  "Served as an Executive Member of the Coding Club, contributing to planning, decision-making, and overall club management.",
+  "Organized and coordinated 10+ technical events, including hackathons, coding contests, and workshops, attracting active participation from students across departments.",
+  "Collaborated with a team of organizers to design event formats, set problem statements, and manage logistics for smooth execution.",
+],
   },
-  {
-    title: "Back-End Developer",
-    job: "Car Manufacture",
-    date: "2023-2024",
-    contents: [
-      "Engineered systems for large-scale data ingestion and analysis, ensuring efficient data processing and storage.",
-      "Developed back-end systems enabling vehicle-to-cloud communication for telemetry, diagnostics, and remote control:",
-      "✅ Implemented secure APIs, following ISO 26262 automotive safety standards.",
-      "✅ Ensured data privacy for customers and partners through industry-compliant protocols.",
-      "✅ Delivered remote features like over-the-air updates, real-time tracking, and remote start capabilities.",
-    ],
-  },
-  {
-    title: "Freelance Developer",
-    job: "Self-Employed",
-    date: "2025-Present",
-    contents: [
-      "Created a personal portfolio using Three.js, React, Vite, and WebAPI to showcase technical expertise.",
-      "Continuously enhancing technical skills and expanding expertise in modern web development and back-end technologies.",
-    ],
-  },
+ {
+  title: "Executive Member",
+  job: "Self Development Club",
+  date: "2024-2026",
+  contents: [
+    "Served as an Executive Member of the Self Development Club, contributing to event planning and overall club coordination.",
+    "Organized and managed 8+ events, including workshops, seminars, and skill-building sessions aimed at personal and professional growth.",
+    "Coordinated with guest speakers and faculty to curate sessions on topics like communication, leadership, and career readiness.",
+  ],
+},
+ {
+  title: "Executive Member",
+  job: "National Service Scheme",
+  date: "2024-2026",
+  contents: [
+    "Served as an Executive Member of the National Service Scheme, actively participating in community service and social outreach initiatives.",
+    "Organized and participated in awareness campaigns, cleanliness drives, and volunteering activities to promote social responsibility.",
+    "Contributed to blood donation camps and educational outreach programs, supporting underprivileged communities.",
+  ],
+},
 ];
 export const reviews = [
   {
-    name: "Jack",
-    username: "@jack",
-    body: "I've never seen anything like this before. It's amazing. I love it.",
-    img: "https://robohash.org/jack",
+    img: "/assets/reviews/1.png",
+    name: "John Doe",
+    username: "@johndoe",
+    body: "This is a fantastic product! It has greatly improved my workflow and productivity.",
   },
-  {
-    name: "Jill",
-    username: "@jill",
-    body: "I don't know what to say. I'm speechless. This is amazing.",
-    img: "https://robohash.org/jill",
-  },
-  {
-    name: "John",
-    username: "@john",
-    body: "I'm at a loss for words. This is amazing. I love it.",
-    img: "https://robohash.org/john",
-  },
-  {
-    name: "Alice",
-    username: "@alice",
-    body: "This is hands down the best thing I've experienced. Highly recommend!",
-    img: "https://robohash.org/alice",
-  },
-  {
-    name: "Bob",
-    username: "@bob",
-    body: "Incredible work! The attention to detail is phenomenal.",
-    img: "https://robohash.org/bob",
-  },
-  {
-    name: "Charlie",
-    username: "@charlie",
-    body: "This exceeded all my expectations. Absolutely stunning!",
-    img: "https://robohash.org/charlie",
-  },
-  {
-    name: "Dave",
-    username: "@dave",
-    body: "Simply breathtaking. The best decision I've made in a while.",
-    img: "https://robohash.org/dave",
-  },
-  {
-    name: "Eve",
-    username: "@eve",
-    body: "So glad I found this. It has changed the game for me.",
-    img: "https://robohash.org/eve",
-  },
+ 
+  
+ 
 ];

@@ -15,7 +15,7 @@ const Footer = () => {
           </a>
         ))}
       </div>
-      <p>© 2025 Sruthi. All rights reserved.</p>
+      <p>© 2025 Sruthika Palanisamy. All rights reserved.</p>
     </section>
   );
 };

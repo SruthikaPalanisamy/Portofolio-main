@@ -2,7 +2,7 @@
 
 import createGlobe from "cobe";
 import { useMotionValue, useSpring } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { twMerge } from "tailwind-merge";
 
@@ -42,6 +42,8 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
   const canvasRef = useRef(null);
   const pointerInteracting = useRef(null);
   const pointerInteractionMovement = useRef(0);
+  const [error, setError] = useState(null);
+  const [webglSupported, setWebglSupported] = useState(true);
 
   const r = useMotionValue(0);
   const rs = useSpring(r, {
@@ -49,6 +51,14 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
     damping: 30,
     stiffness: 100,
   });
+
+  // Check WebGL support on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const canvas = document.createElement("canvas");
+    const supported = !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+    setWebglSupported(supported);
+  }, []);
 
   const updatePointerInteraction = (value) => {
     pointerInteracting.current = value;
@@ -66,6 +76,8 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
   };
 
   useEffect(() => {
+    if (!webglSupported || !canvasRef.current) return;
+
     const onResize = () => {
       if (canvasRef.current) {
         width = canvasRef.current.offsetWidth;
@@ -75,24 +87,54 @@ export function Globe({ className, config = GLOBE_CONFIG }) {
     window.addEventListener("resize", onResize);
     onResize();
 
-    const globe = createGlobe(canvasRef.current, {
-      ...config,
-      width: width * 2,
-      height: width * 2,
-      onRender: (state) => {
-        if (!pointerInteracting.current) phi += 0.005;
-        state.phi = phi + rs.get();
-        state.width = width * 2;
-        state.height = width * 2;
-      },
-    });
+    try {
+      const globe = createGlobe(canvasRef.current, {
+        ...config,
+        width: width * 2,
+        height: width * 2,
+        onRender: (state) => {
+          if (!pointerInteracting.current) phi += 0.005;
+          state.phi = phi + rs.get();
+          state.width = width * 2;
+          state.height = width * 2;
+        },
+      });
 
-    setTimeout(() => (canvasRef.current.style.opacity = "1"), 0);
-    return () => {
-      globe.destroy();
+      setTimeout(() => {
+        if (canvasRef.current) {
+          canvasRef.current.style.opacity = "1";
+        }
+      }, 0);
+
+      return () => {
+        globe.destroy();
+        window.removeEventListener("resize", onResize);
+      };
+    } catch (err) {
+      console.error("Globe creation failed:", err);
+      setError(err.message || "Failed to initialize globe");
       window.removeEventListener("resize", onResize);
-    };
-  }, [rs, config]);
+    }
+  }, [rs, config, webglSupported]);
+
+  if (!webglSupported || error) {
+    return (
+      <div
+        className={twMerge(
+          "mx-auto aspect-[1/1] w-full max-w-[600px] flex items-center justify-center p-4",
+          className
+        )}
+      >
+        <div className="text-center text-white">
+          <p className="text-sm">
+            {error
+              ? `Globe unavailable: ${error}`
+              : "WebGL is not supported in this browser"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

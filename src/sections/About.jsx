@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import Card from "../components/Card";
 import { Globe } from "../components/globe";
+import { GlobeErrorBoundary } from "../components/GlobeErrorBoundary";
 import CopyEmailButton from "../components/CopyEmailButton";
 import { Frameworks } from "../components/FrameWorks";
 
@@ -18,7 +19,7 @@ const About = () => {
           />
           <div className="z-10">
             <p className="headtext">Hi, I'm Sruthika Palanisamy</p>
-            <p className="subtext">I’m a Computer Science Student
+            <p className="subtext">MERN Stack Developer 
             </p>
           </div>
           <div className="absolute inset-x-0 pointer-evets-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-indigo" />
@@ -30,48 +31,59 @@ const About = () => {
             className="flex items-center justify-center w-full h-full"
           >
             <p className="flex items-end text-5xl text-gray-500">
-              CODE IS CRAFT
+              SKILLS 
             </p>
             <Card
               style={{ rotate: "75deg", top: "30%", left: "20%" }}
-              text="GRASP"
+              text="UI"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-30deg", top: "60%", left: "45%" }}
-              text="SOLID"
+              text="UX Design"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "90deg", bottom: "30%", left: "70%" }}
-              text="Design Patterns"
+              text="DBMS"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-45deg", top: "55%", left: "0%" }}
-              text="Design Principles"
+              text="OOPS"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "20deg", top: "10%", left: "38%" }}
-              text="SRP"
+              text="SQL"
+              containerRef={grid2Container}
+            />
+            <Card
+              style={{ rotate: "20deg", top: "10%", left: "38%" }}
+              text="DSA"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "30deg", top: "70%", left: "70%" }}
-              image="assets/logos/csharp-pink.png"
+              image="assets/logos/mongodb.png"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-45deg", top: "70%", left: "25%" }}
-              image="assets/logos/dotnet-pink.png"
+              image="assets/logos/nodejs.png"
               containerRef={grid2Container}
             />
             <Card
               style={{ rotate: "-45deg", top: "5%", left: "10%" }}
-              image="assets/logos/blazor-pink.png"
+              image="assets/logos/react.svg"
               containerRef={grid2Container}
             />
+            <Card
+              style={{ rotate: "-45deg", top: "5%", left: "10%" }}
+              image="assets/logos/express.png"
+              containerRef={grid2Container}
+            />
+
           </div>
         </div>
         {/* Grid 3 */}
@@ -83,14 +95,16 @@ const About = () => {
             </p>
           </div>
           <figure className="absolute left-[30%] top-[10%]">
-            <Globe />
+            <GlobeErrorBoundary>
+              <Globe />
+            </GlobeErrorBoundary>
           </figure>
         </div>
         {/* Grid 4 */}
         <div className="grid-special-color grid-4">
           <div className="flex flex-col items-center justify-center gap-4 size-full">
             <p className="text-center headtext">
-              Do you want to start a project together?
+              Do you want to see my resume?
             </p>
             <CopyEmailButton />
           </div>
@@ -98,10 +112,15 @@ const About = () => {
         {/* Grid 5 */}
         <div className="grid-default-color grid-5">
           <div className="z-10 w-[50%]">
-            <p className="headText">Teck Stack</p>
+            <p className="headText">PROGRAMMING LANGUAGES</p>
             <p className="subtext">
-              I specialize in a variety of languages, frameworks, and tools taht
-              allow me to build robust and scalable applications
+        
+             C <br />
+             JAVA  <br />
+             PYTHON  <br />
+             JAVASCRIPT  <br />
+             HTML  <br />
+             CSS  <br />
             </p>
           </div>
           <div className="absolute inset-y-0 md:inset-y-9 w-full h-full start-[50%] md:scale-125">

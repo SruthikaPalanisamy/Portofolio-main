@@ -2,7 +2,7 @@ import { FlipWords } from "./FlipWords";
 import { motion } from "motion/react";
 
 const HeroText = () => {
-  const words = ["Problem Solver", "Innovator", "Lifelong Learner"];
+  const words = ["700+ LeetCode Problems", "Final Year", "CSD Student  ",  ];
   const variants = {
     hidden: { opacity: 0, x: -50 },
     visible: { opacity: 1, x: 0 },
@@ -29,7 +29,7 @@ const HeroText = () => {
             animate="visible"
             transition={{ delay: 1.2 }}
           >
-            Computer Science & Design Student
+            software developer 
           </motion.p>
           <motion.div
             variants={variants}
@@ -49,7 +49,7 @@ const HeroText = () => {
             animate="visible"
             transition={{ delay: 1.8 }}
           >
-            Driven by logic, consistency, and purposeful learning. Turning ideas into working systems with a strong foundation in problem-solving and system design.
+            Turning ideas into working systems with a strong foundation in problem-solving and system design.
           </motion.p>
         </div>
       </div>
