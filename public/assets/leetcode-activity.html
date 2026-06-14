@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeetCode Activity · Portfolio Component</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --card:      #1c2230;
+      --border:    rgba(255,255,255,0.08);
+      --border-md: rgba(255,255,255,0.14);
+      --text:      #e6edf3;
+      --muted:     #7d8590;
+      --green-0:   #161b22;
+      --green-1:   #0a3d2e;
+      --green-2:   #0d6b52;
+      --green-3:   #12936e;
+      --green-4:   #00c896;
+      --green-5:   #00f5c4;
+      --orange:    #f5a623;
+      --red:       #e94560;
+      --blue:      #3b82f6;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* ─── Outer Card ───────────────────────────────── */
+    .lc-widget {
+      width: 100%;
+      max-width: 780px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.75rem;
+    }
+
+    /* ─── Header ───────────────────────────────────── */
+    .lc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .lc-logo { display: flex; align-items: center; gap: 8px; }
+    .lc-logo svg { width: 20px; height: 20px; }
+    .lc-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+    .lc-username { font-size: 12px; color: var(--green-4); margin-top: 3px; }
+    .lc-pill {
+      background: rgba(0,200,150,0.1);
+      color: var(--green-4);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,200,150,0.25);
+      white-space: nowrap;
+    }
+
+    /* ─── Stats Row ────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--border-md); }
+    .stat-num { font-size: 22px; font-weight: 600; line-height: 1.1; }
+    .stat-label { font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .col-all    { color: var(--text); }
+    .col-easy   { color: var(--green-4); }
+    .col-med    { color: var(--orange); }
+    .col-hard   { color: var(--red); }
+    .col-rank   { color: var(--blue); }
+
+    /* ─── Progress bars ────────────────────────────── */
+    .progress-section { margin-bottom: 1.25rem; }
+    .prog-row { margin-bottom: 8px; }
+    .prog-meta { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; color: var(--muted); }
+    .prog-pct { font-weight: 500; }
+    .prog-track { height: 5px; border-radius: 10px; background: var(--card); overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 10px; width: 0%; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    .fill-easy { background: var(--green-4); }
+    .fill-med  { background: var(--orange); }
+    .fill-hard { background: var(--red); }
+
+    /* ─── Heatmap ──────────────────────────────────── */
+    .heatmap-section { overflow-x: auto; padding-bottom: 4px; }
+    .heatmap-inner   { min-width: 620px; }
+    .month-row       { display: flex; margin-left: 32px; margin-bottom: 5px; }
+    .month-lbl       { font-size: 10px; color: var(--muted); }
+    .heatmap-body    { display: flex; gap: 3px; }
+    .day-axis        { display: flex; flex-direction: column; gap: 3px; margin-right: 5px; padding-top: 13px; }
+    .day-lbl         { font-size: 9px; color: var(--muted); height: 10px; line-height: 10px; width: 26px; text-align: right; }
+    .week-cols       { display: flex; gap: 3px; }
+    .week-col        { display: flex; flex-direction: column; gap: 3px; }
+    .hcell {
+      width: 10px; height: 10px; border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.12s, filter 0.12s;
+      flex-shrink: 0;
+    }
+    .hcell:hover { transform: scale(1.5); filter: brightness(1.2); }
+    .hc0 { background: var(--green-0); border: 1px solid rgba(255,255,255,0.05); }
+    .hc1 { background: var(--green-1); }
+    .hc2 { background: var(--green-2); }
+    .hc3 { background: var(--green-3); }
+    .hc4 { background: var(--green-4); }
+    .hc5 { background: var(--green-5); }
+    .hcell-blank { width: 10px; height: 10px; flex-shrink: 0; }
+
+    /* ─── Legend ───────────────────────────────────── */
+    .legend {
+      display: flex; align-items: center; gap: 5px;
+      margin-top: 10px; justify-content: flex-end;
+      font-size: 10px; color: var(--muted);
+    }
+    .leg-cell { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* ─── Streak Row ───────────────────────────────── */
+    .streak-row {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      margin-top: 1rem; padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .streak-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+    .streak-icon { font-size: 14px; }
+    .streak-val  { font-weight: 600; color: var(--text); font-size: 14px; }
+
+    /* ─── Tooltip ──────────────────────────────────── */
+    .hm-tooltip {
+      position: fixed; display: none;
+      background: #0d1117; border: 1px solid var(--border-md);
+      border-radius: var(--radius-sm); padding: 6px 10px;
+      font-size: 12px; color: var(--text);
+      pointer-events: none; z-index: 9999;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .hm-tooltip strong { color: var(--green-4); }
+
+    /* ─── Footer ───────────────────────────────────── */
+    .lc-footer {
+      margin-top: 1rem;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .lc-footer code {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: monospace;
+      color: var(--green-4);
+    }
+  </style>
+</head>
+<body>
+
+<div class="lc-widget" role="region" aria-label="LeetCode activity widget">
+
+  <!-- Header -->
+  <div class="lc-header">
+    <div>
+      <div class="lc-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" fill="#f5a623"/>
+        </svg>
+        <span class="lc-title">LeetCode Activity</span>
+      </div>
+      <div class="lc-username">shruthy2_1</div>
+    </div>
+    <div class="lc-pill" id="totalPill">Loading…</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num col-all" id="totalSolved">—</div>
+      <div class="stat-label">Solved</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num col-easy" id="easySolved">—</div>
+      <div class="stat-label">Easy</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num col-med" id="medSolved">—</div>
+      <div class="stat-label">Medium</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num col-hard" id="hardSolved">—</div>
+      <div class="stat-label">Hard</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num col-rank" id="ranking">—</div>
+      <div class="stat-label">Ranking</div>
+    </div>
+  </div>
+
+  <!-- Progress bars -->
+  <div class="progress-section">
+    <div class="prog-row">
+      <div class="prog-meta">
+        <span>Easy</span>
+        <span class="prog-pct col-easy" id="easyPct">—</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill fill-easy" id="easyBar"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-meta">
+        <span>Medium</span>
+        <span class="prog-pct col-med" id="medPct">—</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill fill-med" id="medBar"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-meta">
+        <span>Hard</span>
+        <span class="prog-pct col-hard" id="hardPct">—</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill fill-hard" id="hardBar"></div></div>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="heatmap-section">
+    <div class="heatmap-inner">
+      <div class="month-row" id="monthRow"></div>
+      <div class="heatmap-body">
+        <div class="day-axis">
+          <div class="day-lbl" style="height:13px"></div>
+          <div class="day-lbl">Mon</div>
+          <div class="day-lbl"></div>
+          <div class="day-lbl">Wed</div>
+          <div class="day-lbl"></div>
+          <div class="day-lbl">Fri</div>
+          <div class="day-lbl"></div>
+        </div>
+        <div class="week-cols" id="weekCols"></div>
+      </div>
+      <div class="legend">
+        <span>Less</span>
+        <div class="leg-cell hc0"></div>
+        <div class="leg-cell hc1"></div>
+        <div class="leg-cell hc2"></div>
+        <div class="leg-cell hc3"></div>
+        <div class="leg-cell hc4"></div>
+        <div class="leg-cell hc5"></div>
+        <span>More</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Streaks -->
+  <div class="streak-row">
+    <div class="streak-item">
+      <span class="streak-icon" aria-hidden="true">🔥</span>
+      <span>Current streak: <span class="streak-val" id="curStreak">—</span></span>
+    </div>
+    <div class="streak-item">
+      <span class="streak-icon" aria-hidden="true">🏆</span>
+      <span>Max streak: <span class="streak-val" id="maxStreak">—</span></span>
+    </div>
+    <div class="streak-item">
+      <span class="streak-icon" aria-hidden="true">📅</span>
+      <span>Active days: <span class="streak-val" id="activeDays">—</span></span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lc-footer">
+    Replace <code>USERNAME</code> in the JS · data via <code>leetcode-stats-api.herokuapp.com</code>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="hm-tooltip" id="hmTooltip"></div>
+
+<script>
+/* ─── CONFIG: change this to your username ─────────── */
+const USERNAME = 'shruthy2_1';
+const API_BASE = `https://leetcode-stats-api.herokuapp.com/${USERNAME}`;
+const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ─── Heatmap helpers ──────────────────────────────── */
+function levelClass(n) {
+  if (!n) return 'hc0';
+  if (n <= 1)  return 'hc1';
+  if (n <= 3)  return 'hc2';
+  if (n <= 6)  return 'hc3';
+  if (n <= 10) return 'hc4';
+  return 'hc5';
+}
+
+/* ─── Mock submission data (365 days) ─────────────── */
+function generateMockHeatmap() {
+  const today = new Date();
+  const out   = {};
+  const hot   = new Set([7,8,11,12,1,2,3,4]); // active months (1-indexed)
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const k = d.toISOString().slice(0, 10);
+    const m = d.getMonth() + 1;
+    const burst = (m === 8 || m === 3) ? 0.72 : hot.has(m) ? 0.45 : 0.08;
+    out[k] = Math.random() < burst ? Math.floor(Math.random() * 13) + 1 : 0;
+  }
+  return out;
+}
+
+/* ─── Build heatmap grid ───────────────────────────── */
+function buildHeatmap(submData) {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(start.getDate() - 364);
+
+  /* pad to Monday of that week */
+  const pad    = new Date(start);
+  const dow    = pad.getDay();
+  const offset = dow === 0 ? 6 : dow - 1;
+  pad.setDate(pad.getDate() - offset);
+
+  const colsEl   = document.getElementById('weekCols');
+  const monthsEl = document.getElementById('monthRow');
+  colsEl.innerHTML   = '';
+  monthsEl.innerHTML = '';
+
+  let totalSubs = 0, activeDays = 0, tempStr = 0, maxStr = 0, curStr = 0;
+  let lastDate  = new Date(today);
+
+  /* measure streaks on real range */
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const v = submData[d.toISOString().slice(0, 10)] || 0;
+    totalSubs += v;
+    if (v > 0) {
+      activeDays++;
+      tempStr++;
+      if (tempStr > maxStr) maxStr = tempStr;
+    } else {
+      if (i <= 1 && curStr === 0) curStr = tempStr;
+      tempStr = 0;
+    }
+  }
+  if (curStr === 0 && tempStr > 0) curStr = tempStr;
+
+  document.getElementById('curStreak').textContent  = curStr  + 'd';
+  document.getElementById('maxStreak').textContent  = maxStr  + 'd';
+  document.getElementById('activeDays').textContent = activeDays;
+  document.getElementById('totalPill').textContent  = totalSubs.toLocaleString() + ' submissions · last year';
+
+  /* render columns */
+  const tooltip = document.getElementById('hmTooltip');
+  const cur     = new Date(pad);
+  let weekIdx   = 0;
+  let col       = null;
+  const monthSeen = {};
+
+  while (cur <= today) {
+    const curDow = (cur.getDay() + 6) % 7; // Mon=0 … Sun=6
+    if (curDow === 0 || !col) {
+      col = document.createElement('div');
+      col.className = 'week-col';
+      colsEl.appendChild(col);
+      const mn = cur.getMonth();
+      if (!monthSeen[mn]) { monthSeen[mn] = weekIdx; }
+      weekIdx++;
+    }
+
+    const k   = cur.toISOString().slice(0, 10);
+    const v   = submData[k];
+    const cell = document.createElement('div');
+
+    if (cur < start || v === undefined) {
+      cell.className = 'hcell-blank';
+    } else {
+      cell.className = 'hcell ' + levelClass(v);
+      const label = cur.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      cell.addEventListener('mouseenter', e => {
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `<strong>${v}</strong> submission${v !== 1 ? 's' : ''} · ${label}`;
+      });
+      cell.addEventListener('mousemove', e => {
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top  = (e.clientY - 34) + 'px';
+      });
+      cell.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+    }
+
+    col.appendChild(cell);
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  /* month labels: one per column group */
+  const total = weekIdx;
+  const entries = Object.entries(monthSeen).sort((a,b) => a[1]-b[1]);
+  let lastX = 0;
+  entries.forEach(([month, pos]) => {
+    const span = document.createElement('span');
+    span.className   = 'month-lbl';
+    const gapCols    = pos - lastX;
+    span.style.width = (gapCols * 13) + 'px';
+    span.style.display = 'inline-block';
+    span.textContent = MONTHS[+month];
+    monthsEl.appendChild(span);
+    lastX = pos;
+  });
+}
+
+/* ─── Load real stats from API ─────────────────────── */
+async function loadStats() {
+  try {
+    const res  = await fetch(API_BASE);
+    const data = await res.json();
+    if (!data || data.status === 'error') throw new Error('no data');
+
+    document.getElementById('totalSolved').textContent = data.totalSolved ?? '—';
+    document.getElementById('easySolved').textContent  = data.easySolved  ?? '—';
+    document.getElementById('medSolved').textContent   = data.mediumSolved ?? '—';
+    document.getElementById('hardSolved').textContent  = data.hardSolved  ?? '—';
+    document.getElementById('ranking').textContent     = data.ranking ? '#' + data.ranking.toLocaleString() : '—';
+
+    const ep = Math.round((data.easySolved   / (data.totalEasy   || 1)) * 100);
+    const mp = Math.round((data.mediumSolved / (data.totalMedium || 1)) * 100);
+    const hp = Math.round((data.hardSolved   / (data.totalHard   || 1)) * 100);
+    setProgress(ep, mp, hp);
+
+  } catch (e) {
+    /* fallback display values */
+    document.getElementById('totalSolved').textContent = '—';
+    document.getElementById('easySolved').textContent  = '—';
+    document.getElementById('medSolved').textContent   = '—';
+    document.getElementById('hardSolved').textContent  = '—';
+    document.getElementById('ranking').textContent     = '—';
+    setProgress(42, 28, 11);
+  }
+}
+
+function setProgress(ep, mp, hp) {
+  document.getElementById('easyPct').textContent = ep + '%';
+  document.getElementById('medPct').textContent  = mp + '%';
+  document.getElementById('hardPct').textContent = hp + '%';
+  setTimeout(() => {
+    document.getElementById('easyBar').style.width = ep + '%';
+    document.getElementById('medBar').style.width  = mp + '%';
+    document.getElementById('hardBar').style.width = hp + '%';
+  }, 150);
+}
+
+/* ─── Init ─────────────────────────────────────────── */
+buildHeatmap(generateMockHeatmap());
+loadStats();
+</script>
+
+</body>
+</html>

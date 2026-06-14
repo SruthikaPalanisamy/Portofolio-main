@@ -7,6 +7,8 @@ import Experiences from "./sections/Experiences";
 import Testimonial from "./sections/Testimonial";
 import Contact from "./sections/Contact";
 import Footer from './sections/Footer';
+import LeetCodeActivity from "./sections/LeetCodeActivity";
+ 
 
 const App = () => {
   return (
@@ -15,6 +17,9 @@ const App = () => {
       <Hero />
       <About />
       <Projects />
+      <section style={{ maxWidth: 780, margin: "0 auto", padding: "2rem 1rem" }}>
+        <LeetCodeActivity />
+      </section>
       <Experiences />
       <Contact />
       <Footer/>
