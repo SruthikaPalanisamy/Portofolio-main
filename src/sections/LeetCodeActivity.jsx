@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-const USERNAME = "M-Dharani18"; // ← change this
+const USERNAME = "shruthy2_1"; // ← change this
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 function levelClass(n) {
@@ -215,6 +215,7 @@ export default function LeetCodeActivity() {
   );
 }
 
+
 const s = {
   widget:    { background: "#161b22", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem 1.75rem", fontFamily: "Inter, system-ui, sans-serif", color: "#e6edf3", position: "relative" },
   header:    { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem", flexWrap: "wrap", gap: 10 },
@@ -233,3 +234,4 @@ const s = {
   streakItem:{ display: "flex", alignItems: "center", gap: 6 },
   tooltip:   { position: "fixed", background: "#0d1117", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#e6edf3", pointerEvents: "none", zIndex: 9999, boxShadow: "0 4px 16px rgba(0,0,0,0.4)" },
 };
+
