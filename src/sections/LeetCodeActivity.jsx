@@ -1,81 +1,136 @@
 import { useEffect, useState, useRef } from "react";
 
-const USERNAME = "shruthy2_1"; // ← change this
+// ✅ Change this to your username
+const USERNAME = "shruthy2_1";
+
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 function levelClass(n) {
-  if (!n) return "hc0";
-  if (n <= 1) return "hc1";
-  if (n <= 3) return "hc2";
-  if (n <= 6) return "hc3";
-  if (n <= 10) return "hc4";
-  return "hc5";
-}
-
-function generateMockHeatmap() {
-  const today = new Date();
-  const out = {};
-  const hot = new Set([7, 8, 11, 12, 1, 2, 3, 4]);
-  for (let i = 364; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const k = d.toISOString().slice(0, 10);
-    const m = d.getMonth() + 1;
-    const burst = m === 8 || m === 3 ? 0.72 : hot.has(m) ? 0.45 : 0.08;
-    out[k] = Math.random() < burst ? Math.floor(Math.random() * 13) + 1 : 0;
-  }
-  return out;
+  if (!n) return "#161b22";
+  if (n <= 1) return "#0a3d2e";
+  if (n <= 3) return "#0d6b52";
+  if (n <= 6) return "#12936e";
+  if (n <= 10) return "#00c896";
+  return "#00f5c4";
 }
 
 export default function LeetCodeActivity() {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats]   = useState(null);
+  const [heatmap, setHeatmap] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError]   = useState(false);
   const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
-  const heatmapData = useRef(generateMockHeatmap());
 
   useEffect(() => {
-    fetch(`https://leetcode-stats-api.herokuapp.com/${USERNAME}`)
-      .then((r) => r.json())
-      .then((data) => setStats(data))
-      .catch(() => setStats(null));
+    async function fetchAll() {
+      setLoading(true);
+      try {
+        // Primary API
+        const res = await fetch(
+          `https://leetcode-stats-api.herokuapp.com/${USERNAME}`
+        );
+        const data = await res.json();
+
+        if (data && data.totalSolved !== undefined) {
+          setStats(data);
+        } else {
+          throw new Error("bad data");
+        }
+      } catch {
+        // Fallback: alfa-leetcode-api (more reliable)
+        try {
+          const res2 = await fetch(
+            `https://alfa-leetcode-api.onrender.com/${USERNAME}`
+          );
+          const d2 = await res2.json();
+          if (d2 && d2.totalSolved !== undefined) {
+            setStats({
+              totalSolved:  d2.totalSolved,
+              easySolved:   d2.easySolved,
+              mediumSolved: d2.mediumSolved,
+              hardSolved:   d2.hardSolved,
+              totalEasy:    d2.totalEasy   || 950,
+              totalMedium:  d2.totalMedium || 2069,
+              totalHard:    d2.totalHard   || 943,
+              ranking:      d2.ranking,
+            });
+          } else throw new Error();
+        } catch {
+          setError(true);
+          // Show real numbers from your profile screenshot as fallback
+          setStats({
+            totalSolved: 698, easySolved: 273, mediumSolved: 330, hardSolved: 95,
+            totalEasy: 950, totalMedium: 2069, totalHard: 943, ranking: 90063,
+          });
+        }
+      }
+
+      // Heatmap via alfa API
+      try {
+        const res = await fetch(
+          `https://alfa-leetcode-api.onrender.com/${USERNAME}/calendar`
+        );
+        const d = await res.json();
+        // Returns { submissionCalendar: "{timestamp: count, ...}" }
+        const raw = d.submissionCalendar
+          ? JSON.parse(d.submissionCalendar)
+          : {};
+        const mapped = {};
+        Object.entries(raw).forEach(([ts, count]) => {
+          const date = new Date(parseInt(ts) * 1000).toISOString().slice(0, 10);
+          mapped[date] = count;
+        });
+        setHeatmap(mapped);
+      } catch {
+        setHeatmap({});
+      }
+
+      setLoading(false);
+    }
+    fetchAll();
   }, []);
 
+  // ── Build grid ──────────────────────────────────────────
   const today = new Date();
-  const start = new Date(today);
-  start.setDate(start.getDate() - 364);
-  const pad = new Date(start);
-  const dow = pad.getDay();
+  const start = new Date(today); start.setDate(start.getDate() - 364);
+  const pad   = new Date(start);
+  const dow   = pad.getDay();
   pad.setDate(pad.getDate() - (dow === 0 ? 6 : dow - 1));
 
-  // Build weeks array
   const weeks = [];
   const monthSeen = {};
   const cur = new Date(pad);
   let week = [];
+
   while (cur <= today) {
     const curDow = (cur.getDay() + 6) % 7;
     if (curDow === 0 && week.length) { weeks.push(week); week = []; }
     const mn = cur.getMonth();
     if (!monthSeen[mn]) monthSeen[mn] = weeks.length;
     const k = cur.toISOString().slice(0, 10);
-    week.push({ date: new Date(cur), key: k, value: cur >= start ? (heatmapData.current[k] ?? 0) : null });
+    week.push({
+      date:  new Date(cur),
+      key:   k,
+      value: cur >= start ? (heatmap[k] ?? 0) : null,
+    });
     cur.setDate(cur.getDate() + 1);
   }
   if (week.length) weeks.push(week);
 
-  // Streak calc
+  // ── Streak & totals from heatmap ────────────────────────
   let totalSubs = 0, activeDays = 0, tempStr = 0, maxStr = 0, curStr = 0;
   for (let i = 364; i >= 0; i--) {
     const d = new Date(today); d.setDate(d.getDate() - i);
-    const v = heatmapData.current[d.toISOString().slice(0, 10)] || 0;
+    const v = heatmap[d.toISOString().slice(0, 10)] || 0;
     totalSubs += v;
     if (v > 0) { activeDays++; tempStr++; if (tempStr > maxStr) maxStr = tempStr; }
     else { if (i <= 1 && curStr === 0) curStr = tempStr; tempStr = 0; }
   }
   if (curStr === 0 && tempStr > 0) curStr = tempStr;
 
-  const ep = stats ? Math.round((stats.easySolved / (stats.totalEasy || 1)) * 100) : 42;
-  const mp = stats ? Math.round((stats.mediumSolved / (stats.totalMedium || 1)) * 100) : 28;
-  const hp = stats ? Math.round((stats.hardSolved / (stats.totalHard || 1)) * 100) : 11;
+  const ep = stats ? Math.round((stats.easySolved   / (stats.totalEasy   || 1)) * 100) : 0;
+  const mp = stats ? Math.round((stats.mediumSolved / (stats.totalMedium || 1)) * 100) : 0;
+  const hp = stats ? Math.round((stats.hardSolved   / (stats.totalHard   || 1)) * 100) : 0;
 
   return (
     <div style={s.widget}>
@@ -85,23 +140,26 @@ export default function LeetCodeActivity() {
           <div style={s.titleRow}>
             <span style={{ color: "#f5a623", fontSize: 18 }}>⌨</span>
             <span style={s.title}>LeetCode Activity</span>
+            {error && <span style={{ fontSize: 10, color: "#f5a623", background: "rgba(245,166,35,0.1)", padding: "2px 8px", borderRadius: 10, border: "1px solid rgba(245,166,35,0.3)" }}>cached data</span>}
           </div>
           <div style={s.username}>@{USERNAME}</div>
         </div>
-        <div style={s.pill}>{totalSubs.toLocaleString()} submissions · last year</div>
+        <div style={s.pill}>
+          {loading ? "Loading…" : `${totalSubs.toLocaleString()} submissions · last year`}
+        </div>
       </div>
 
       {/* Stats */}
       <div style={s.statsGrid}>
         {[
-          { label: "Solved", val: stats?.totalSolved ?? "—", color: "#e6edf3" },
-          { label: "Easy",   val: stats?.easySolved  ?? "—", color: "#00c896" },
+          { label: "Solved", val: stats?.totalSolved  ?? "—", color: "#e6edf3" },
+          { label: "Easy",   val: stats?.easySolved   ?? "—", color: "#00c896" },
           { label: "Medium", val: stats?.mediumSolved ?? "—", color: "#f5a623" },
-          { label: "Hard",   val: stats?.hardSolved  ?? "—", color: "#e94560" },
-          { label: "Rank",   val: stats?.ranking ? "#" + stats.ranking.toLocaleString() : "—", color: "#3b82f6" },
+          { label: "Hard",   val: stats?.hardSolved   ?? "—", color: "#e94560" },
+          { label: "Rank",   val: stats?.ranking ? "#" + Number(stats.ranking).toLocaleString() : "—", color: "#3b82f6" },
         ].map(({ label, val, color }) => (
           <div key={label} style={s.statCard}>
-            <div style={{ ...s.statNum, color }}>{val}</div>
+            <div style={{ ...s.statNum, color }}>{loading ? "…" : val}</div>
             <div style={s.statLabel}>{label}</div>
           </div>
         ))}
@@ -109,17 +167,19 @@ export default function LeetCodeActivity() {
 
       {/* Progress bars */}
       {[
-        { label: "Easy",   pct: ep, color: "#00c896" },
-        { label: "Medium", pct: mp, color: "#f5a623" },
-        { label: "Hard",   pct: hp, color: "#e94560" },
-      ].map(({ label, pct, color }) => (
+        { label: "Easy",   pct: ep, color: "#00c896", solved: stats?.easySolved,   total: stats?.totalEasy },
+        { label: "Medium", pct: mp, color: "#f5a623", solved: stats?.mediumSolved, total: stats?.totalMedium },
+        { label: "Hard",   pct: hp, color: "#e94560", solved: stats?.hardSolved,   total: stats?.totalHard },
+      ].map(({ label, pct, color, solved, total }) => (
         <div key={label} style={{ marginBottom: 8 }}>
           <div style={s.progMeta}>
             <span>{label}</span>
-            <span style={{ color }}>{pct}%</span>
+            <span style={{ color, fontWeight: 500 }}>
+              {loading ? "…" : `${solved ?? "—"} / ${total ?? "—"}`}
+            </span>
           </div>
           <div style={s.progTrack}>
-            <div style={{ ...s.progFill, width: `${pct}%`, background: color }} />
+            <div style={{ ...s.progFill, width: loading ? "0%" : `${pct}%`, background: color }} />
           </div>
         </div>
       ))}
@@ -129,8 +189,8 @@ export default function LeetCodeActivity() {
         <div style={{ minWidth: 620 }}>
           {/* Month labels */}
           <div style={{ display: "flex", marginLeft: 32, marginBottom: 5 }}>
-            {Object.entries(monthSeen).sort((a,b)=>a[1]-b[1]).map(([month, pos], i, arr) => {
-              const nextPos = arr[i+1]?.[1] ?? weeks.length;
+            {Object.entries(monthSeen).sort((a, b) => a[1] - b[1]).map(([month, pos], i, arr) => {
+              const nextPos = arr[i + 1]?.[1] ?? weeks.length;
               return (
                 <span key={month} style={{ fontSize: 10, color: "#7d8590", width: (nextPos - pos) * 13, display: "inline-block" }}>
                   {MONTHS[+month]}
@@ -138,39 +198,34 @@ export default function LeetCodeActivity() {
               );
             })}
           </div>
+
           {/* Grid */}
           <div style={{ display: "flex", gap: 3 }}>
             {/* Day labels */}
             <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 5, paddingTop: 13 }}>
-              {["","Mon","","Wed","","Fri",""].map((d, i) => (
+              {["", "Mon", "", "Wed", "", "Fri", ""].map((d, i) => (
                 <div key={i} style={{ fontSize: 9, color: "#7d8590", height: 10, lineHeight: "10px", width: 26, textAlign: "right" }}>{d}</div>
               ))}
             </div>
+
             {/* Cells */}
             <div style={{ display: "flex", gap: 3 }}>
-              {weeks.map((week, wi) => (
+              {weeks.map((wk, wi) => (
                 <div key={wi} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  {week.map((cell, di) => (
+                  {wk.map((cell, di) => (
                     <div
                       key={di}
                       style={{
                         width: 10, height: 10, borderRadius: 2, flexShrink: 0,
                         cursor: cell.value !== null ? "pointer" : "default",
-                        background: cell.value === null ? "transparent"
-                          : cell.value === 0 ? "#161b22"
-                          : cell.value <= 1  ? "#0a3d2e"
-                          : cell.value <= 3  ? "#0d6b52"
-                          : cell.value <= 6  ? "#12936e"
-                          : cell.value <= 10 ? "#00c896"
-                          : "#00f5c4",
+                        background: cell.value === null ? "transparent" : levelClass(cell.value),
                         border: cell.value === 0 ? "1px solid rgba(255,255,255,0.05)" : "none",
                         transition: "transform 0.1s",
                       }}
                       onMouseEnter={(e) => cell.value !== null && setTooltip({
                         visible: true,
                         text: `${cell.value} submission${cell.value !== 1 ? "s" : ""} · ${cell.date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`,
-                        x: e.clientX + 14,
-                        y: e.clientY - 34,
+                        x: e.clientX + 14, y: e.clientY - 34,
                       })}
                       onMouseMove={(e) => setTooltip(t => ({ ...t, x: e.clientX + 14, y: e.clientY - 34 }))}
                       onMouseLeave={() => setTooltip(t => ({ ...t, visible: false }))}
@@ -180,6 +235,7 @@ export default function LeetCodeActivity() {
               ))}
             </div>
           </div>
+
           {/* Legend */}
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 10, justifyContent: "flex-end", fontSize: 10, color: "#7d8590" }}>
             <span>Less</span>
@@ -194,13 +250,15 @@ export default function LeetCodeActivity() {
       {/* Streaks */}
       <div style={s.streakRow}>
         {[
-          { icon: "🔥", label: "Current streak", val: curStr + "d" },
-          { icon: "🏆", label: "Max streak",     val: maxStr + "d" },
-          { icon: "📅", label: "Active days",    val: activeDays },
+          { icon: "🔥", label: "Current streak", val: loading ? "…" : curStr + "d" },
+          { icon: "🏆", label: "Max streak",     val: loading ? "…" : maxStr + "d" },
+          { icon: "📅", label: "Active days",    val: loading ? "…" : activeDays },
         ].map(({ icon, label, val }) => (
           <div key={label} style={s.streakItem}>
             <span>{icon}</span>
-            <span style={{ color: "#7d8590", fontSize: 12 }}>{label}: <strong style={{ color: "#e6edf3" }}>{val}</strong></span>
+            <span style={{ color: "#7d8590", fontSize: 12 }}>
+              {label}: <strong style={{ color: "#e6edf3" }}>{val}</strong>
+            </span>
           </div>
         ))}
       </div>
@@ -214,7 +272,6 @@ export default function LeetCodeActivity() {
     </div>
   );
 }
-
 
 const s = {
   widget:    { background: "#161b22", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "1.5rem 1.75rem", fontFamily: "Inter, system-ui, sans-serif", color: "#e6edf3", position: "relative" },
@@ -234,4 +291,3 @@ const s = {
   streakItem:{ display: "flex", alignItems: "center", gap: 6 },
   tooltip:   { position: "fixed", background: "#0d1117", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#e6edf3", pointerEvents: "none", zIndex: 9999, boxShadow: "0 4px 16px rgba(0,0,0,0.4)" },
 };
-
