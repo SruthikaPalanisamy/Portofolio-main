@@ -89,9 +89,9 @@ const About = () => {
         {/* Grid 3 */}
         <div className="grid-black-color grid-3">
           <div className="z-10 w-[50%]">
-            <p className="headtext">Time Zone</p>
+            <p className="headtext"></p>
             <p className="subtext">
-              I'm based in Mars, and open to remote work worldwide
+              Engineering experiences, not just applications
             </p>
           </div>
           <figure className="absolute left-[30%] top-[10%]">
